@@ -1,0 +1,422 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: #050505;
+  color: #fff;
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.01em;
+}
+
+/* Hide scrollbars for the in-app scroll areas but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes ox-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ox-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ox-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ox-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ox-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes ox-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ox-page-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.99);
+  }
+}
+
+@keyframes ox-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ox-orb-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ox-orb-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.04);
+    filter: brightness(1.25);
+  }
+}
+
+@keyframes ox-shimmer {
+  0% {
+    background-position: -480px 0;
+  }
+  100% {
+    background-position: 480px 0;
+  }
+}
+
+@keyframes ox-shimmer-premium {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ox-ripple {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+@keyframes ox-logo-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ox-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes ox-splash-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  40% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes ox-press {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+}
+
+@keyframes ox-sheen {
+  0% {
+    transform: translateX(-120%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-15deg);
+  }
+}
+
+/* ---------- Utility animation classes ---------- */
+.anim-fade-up {
+  animation: ox-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-fade-in {
+  animation: ox-fade-in 0.5s ease both;
+}
+.anim-scale-in {
+  animation: ox-scale-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-slide-in-right {
+  animation: ox-slide-in-right 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-slide-in-left {
+  animation: ox-slide-in-left 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-page-enter {
+  animation: ox-page-enter 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-float {
+  animation: ox-float 4s ease-in-out infinite;
+}
+.anim-glow {
+  animation: ox-glow-pulse 3.2s ease-in-out infinite;
+}
+.anim-orb-rotate {
+  animation: ox-orb-rotate 18s linear infinite;
+}
+.anim-orb-breathe {
+  animation: ox-orb-breathe 4.5s ease-in-out infinite;
+}
+.anim-splash-ring {
+  animation: ox-splash-ring 2s ease-out both;
+}
+
+/* Page transition layer */
+.page-enter {
+  animation: ox-page-enter 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.page-exit {
+  animation: ox-page-exit 0.22s ease-in both;
+}
+
+/* Staggered children helper */
+.stagger > * {
+  animation: ox-fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.stagger > *:nth-child(1) {
+  animation-delay: 0.04s;
+}
+.stagger > *:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.stagger > *:nth-child(3) {
+  animation-delay: 0.16s;
+}
+.stagger > *:nth-child(4) {
+  animation-delay: 0.22s;
+}
+.stagger > *:nth-child(5) {
+  animation-delay: 0.28s;
+}
+.stagger > *:nth-child(6) {
+  animation-delay: 0.34s;
+}
+.stagger > *:nth-child(7) {
+  animation-delay: 0.4s;
+}
+.stagger > *:nth-child(8) {
+  animation-delay: 0.46s;
+}
+.stagger > *:nth-child(9) {
+  animation-delay: 0.52s;
+}
+.stagger > *:nth-child(10) {
+  animation-delay: 0.58s;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #131313 25%,
+    #1e1e1e 37%,
+    #131313 63%
+  );
+  background-size: 480px 100%;
+  animation: ox-shimmer 1.4s ease-in-out infinite;
+}
+
+/* Premium skeleton with gold sheen */
+.skeleton-gold {
+  position: relative;
+  background: #131313;
+  overflow: hidden;
+}
+.skeleton-gold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.08) 40%,
+    rgba(232, 200, 98, 0.14) 50%,
+    rgba(212, 175, 55, 0.08) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: ox-shimmer-premium 1.6s ease-in-out infinite;
+}
+
+/* Ripple button base */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple-span {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(212, 175, 55, 0.35);
+  transform: scale(0);
+  animation: ox-ripple 0.6s ease-out;
+  pointer-events: none;
+}
+
+/* Sheen effect for premium cards */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.06),
+    transparent
+  );
+  transform: translateX(-120%) skewX(-15deg);
+  pointer-events: none;
+}
+.sheen:hover::before {
+  animation: ox-sheen 0.9s ease-out;
+}
+
+/* Premium soft shadow for cards */
+.shadow-premium {
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.7),
+    0 2px 8px -2px rgba(0, 0, 0, 0.4);
+}
+.shadow-gold {
+  box-shadow: 0 0 24px -6px rgba(212, 175, 55, 0.35);
+}
+.shadow-gold-lg {
+  box-shadow: 0 0 40px -8px rgba(212, 175, 55, 0.45),
+    0 0 80px -20px rgba(212, 175, 55, 0.2);
+}
+.shadow-float {
+  box-shadow: 0 20px 50px -16px rgba(0, 0, 0, 0.8),
+    0 4px 12px -4px rgba(0, 0, 0, 0.5);
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(23, 23, 23, 0.6);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+}
+.glass-nav {
+  background: rgba(12, 12, 12, 0.82);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #f4e09c 0%, #d4af37 45%, #9c7b1f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Press feedback */
+.pressable {
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.pressable:active {
+  transform: scale(0.96);
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
