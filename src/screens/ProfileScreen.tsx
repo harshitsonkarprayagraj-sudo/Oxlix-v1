@@ -298,7 +298,7 @@ export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProp
 
       {editOpen && (
         <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm" onClick={() => !editSaving && setEditOpen(false)}>
-          <div className="w-full max-w-[440px] rounded-t-3xl border border-white/10 bg-ox-card p-5 pb-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-h-[90vh] overflow-y-auto max-w-[440px] rounded-t-3xl border border-white/10 bg-ox-card p-5 pb-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Edit Profile</h2>
               <button disabled={editSaving} onClick={() => setEditOpen(false)} className="pressable flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/50 hover:text-white" aria-label="Close">
