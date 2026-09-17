@@ -4,6 +4,8 @@ import { Card } from '@/components/ui/Card';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { haptic } from '@/lib/haptics';
+import { useAuth } from '@/lib/auth/AuthContext';
+import { savedItemsRepository } from '@/lib/repositories';
 
 interface NewsScreenProps {
   onBack: () => void;
@@ -141,7 +143,27 @@ async function shareArticle(title: string, source: string) {
 export function NewsScreen({ onBack }: NewsScreenProps) {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<Category | 'all'>('all');
+  const { user } = useAuth();
   const [savedIds, setSavedIds] = useState<Set<number>>(new Set());
+  const [savedRowIds, setSavedRowIds] = useState<Map<number, string>>(new Map());
+
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const items = await savedItemsRepository.fetch(user.id);
+        const ids = new Set<number>();
+        const rows = new Map<number, string>();
+        items.forEach((item) => {
+          const match = item.item_id.match(/^news:(\d+)$/);
+          if (match) { ids.add(Number(match[1])); rows.set(Number(match[1]), item.id); }
+        });
+        if (!cancelled) { setSavedIds(ids); setSavedRowIds(rows); }
+      } catch { /* keep empty state */ }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 800);
@@ -152,14 +174,32 @@ export function NewsScreen({ onBack }: NewsScreenProps) {
   const otherArticles = articles.filter((a) => a.category !== 'intelligence');
   const filtered = filter === 'all' ? articles : articles.filter((a) => a.category === filter);
 
-  const toggleSave = (id: number) => {
+  const toggleSave = async (id: number) => {
+    if (!user) return;
     haptic('tick');
-    setSavedIds((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
-      return next;
-    });
+    const article = articles.find((a) => a.id === id);
+    if (!article) return;
+    const existingRowId = savedRowIds.get(id);
+    try {
+      if (existingRowId) {
+        await savedItemsRepository.remove(existingRowId);
+        setSavedIds((prev) => { const next = new Set(prev); next.delete(id); return next; });
+        setSavedRowIds((prev) => { const next = new Map(prev); next.delete(id); return next; });
+      } else {
+        await savedItemsRepository.add(user.id, {
+          item_type: 'article',
+          item_id: `news:${id}`,
+          title: article.title,
+          metadata: { summary: article.summary, source: article.source, image: article.image, category: article.category },
+        });
+        const items = await savedItemsRepository.fetch(user.id);
+        const row = items.find((item) => item.item_id === `news:${id}`);
+        setSavedIds((prev) => new Set(prev).add(id));
+        if (row) setSavedRowIds((prev) => new Map(prev).set(id, row.id));
+      }
+    } catch {
+      // Keep UI unchanged if the database operation fails.
+    }
   };
 
   const renderArticle = (a: Article, featured = false) => {

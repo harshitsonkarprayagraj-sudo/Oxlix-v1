@@ -10,6 +10,8 @@ import {
   Video,
   Zap,
   Star,
+  X,
+  Loader2,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -37,7 +39,7 @@ const tabConfig: { key: ProfileTab; label: string; icon: LucideIcon }[] = [
 ];
 
 export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProps) {
-  const { profile, user } = useAuth();
+  const { profile, user, updateProfile } = useAuth();
   const [tab, setTab] = useState<ProfileTab>('posts');
   const [loading, setLoading] = useState(true);
   const [activities, setActivities] = useState<ActivityLog[]>([]);
@@ -45,6 +47,12 @@ export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProp
   const [posts, setPosts] = useState<Post[]>([]);
   const [reels, setReels] = useState<Post[]>([]);
   const [videos, setVideos] = useState<Post[]>([]);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editUsername, setEditUsername] = useState('');
+  const [editBio, setEditBio] = useState('');
+  const [editSaving, setEditSaving] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
 
   const displayName = profile?.name ?? 'Loading…';
   const username = profile?.username ?? 'user';
@@ -78,6 +86,34 @@ export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProp
     })();
     return () => { cancelled = true; };
   }, [user]);
+
+  const openEdit = () => {
+    haptic('light');
+    setEditName(profile?.name ?? '');
+    setEditUsername(profile?.username ?? '');
+    setEditBio(profile?.bio ?? '');
+    setEditError(null);
+    setEditOpen(true);
+  };
+
+  const saveEdit = async () => {
+    const name = editName.trim();
+    const username = editUsername.trim().replace(/^@/, '').toLowerCase();
+    const bioValue = editBio.trim();
+    if (!name) { setEditError('Name is required.'); return; }
+    if (!/^[a-z0-9_]{3,30}$/.test(username)) { setEditError('Username: 3–30 characters, letters, numbers and _.'); return; }
+    setEditSaving(true);
+    setEditError(null);
+    try {
+      await updateProfile({ name, username, bio: bioValue || null });
+      haptic('success');
+      setEditOpen(false);
+    } catch (err) {
+      setEditError((err as Error).message || 'Could not update profile.');
+    } finally {
+      setEditSaving(false);
+    }
+  };
 
   const postCount = posts.length + reels.length + videos.length;
 
@@ -144,7 +180,7 @@ export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProp
           <div className="px-5 pb-5">
             <div className="-mt-14 flex items-end justify-between">
               <Avatar name={displayName} src={avatarUrl} size={100} ring />
-              <Button size="sm" variant="outline" onClick={() => haptic('tick')}>Edit Profile</Button>
+              <Button size="sm" variant="outline" onClick={openEdit}>Edit Profile</Button>
             </div>
             <div className="mt-3 flex items-center gap-2">
               <h2 className="text-xl font-semibold text-white">{displayName}</h2>
@@ -259,6 +295,28 @@ export function ProfileScreen({ onOpenSettings, onOpenVault }: ProfileScreenProp
           )}
         </div>
       </div>
+
+      {editOpen && (
+        <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/70 p-0 backdrop-blur-sm" onClick={() => !editSaving && setEditOpen(false)}>
+          <div className="w-full max-w-[440px] rounded-t-3xl border border-white/10 bg-ox-card p-5 pb-8 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-white">Edit Profile</h2>
+              <button disabled={editSaving} onClick={() => setEditOpen(false)} className="pressable flex h-9 w-9 items-center justify-center rounded-full bg-white/5 text-white/50 hover:text-white" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="space-y-3">
+              <input value={editName} onChange={(e) => setEditName(e.target.value)} maxLength={60} placeholder="Name" className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none focus:border-ox-gold/40" />
+              <input value={editUsername} onChange={(e) => setEditUsername(e.target.value)} maxLength={30} placeholder="Username" className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none focus:border-ox-gold/40" />
+              <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} maxLength={300} rows={4} placeholder="Bio" className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white outline-none focus:border-ox-gold/40" />
+            </div>
+            {editError && <p className="mt-3 text-xs text-rose-300">{editError}</p>}
+            <Button fullWidth size="lg" className="mt-4" onClick={saveEdit} disabled={editSaving}>
+              {editSaving ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : 'Save Changes'}
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

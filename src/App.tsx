@@ -28,7 +28,7 @@ function ScreenLoader() {
 }
 
 function AppShell() {
-  const { user, loading } = useAuth();
+  const { user, loading, settings } = useAuth();
   const [booting, setBooting] = useState(true);
   const [tab, setTab] = useState<TabKey>('home');
   const [subScreen, setSubScreen] = useState<SubScreen>(null);
@@ -84,7 +84,7 @@ function AppShell() {
   }
 
   return (
-    <div className="relative flex h-full w-full justify-center bg-black">
+    <div className={["relative flex h-full w-full justify-center bg-black", settings?.dark_mode === false ? 'light-mode' : ''].join(' ')}>
       <div className="relative h-full w-full max-w-[440px] overflow-hidden bg-ox-black sm:my-4 sm:h-[calc(100%-2rem)] sm:rounded-[44px] sm:border sm:border-white/10 sm:shadow-float">
         <div
           className="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full opacity-60 blur-3xl"
