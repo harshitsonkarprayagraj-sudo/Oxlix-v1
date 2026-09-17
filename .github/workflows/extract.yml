@@ -14,10 +14,10 @@ jobs:
 
       - name: Extract ZIP
         run: |
-          unzip -o "project-bolt-sb1-pmfhmmga (1).zip" -d extracted
+          unzip -o "oxlix-v1-fix-batch.zip" -d extracted
           cp -r extracted/*/* . 2>/dev/null || cp -r extracted/* .
           rm -rf extracted
-          rm -f "project-bolt-sb1-pmfhmmga (1).zip"
+          rm -f "oxlix-v1-fix-batch.zip"
 
       - name: Commit extracted files
         run: |
